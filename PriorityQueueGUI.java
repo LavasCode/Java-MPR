@@ -41,7 +41,6 @@ public class PriorityQueueGUI {
         inputPanel.add(nodeField);
         inputPanel.add(new JLabel("Priority: "));
         inputPanel.add(priorityField);
-        inputPanel.add(addButton);
 
         frame.add(inputPanel, BorderLayout.NORTH);
 
