@@ -1,7 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.*;
+//import java.util.concurrent.TimeUnit;
+
+class Node {
+    String data;
+    int priority;
+    long insertionOrder;
+
+    public Node(String data, int priority, long insertionOrder) {
+        this.data = data;
+        this.priority = priority;
+        this.insertionOrder = insertionOrder;
+    }
+}
 
 public class PatientRegistrationPage {
     private JFrame frame;
@@ -11,6 +24,8 @@ public class PatientRegistrationPage {
     private ButtonGroup genderButtonGroup;
     private JButton submitButton;
     private boolean hasEmergencySelected = false;
+    private PriorityQueue<Node> priorityQueue;
+    private PriorityQueueGUI queueGUI;
 
     public PatientRegistrationPage() {
         frame = new JFrame("Patient Registration");
@@ -54,6 +69,10 @@ public class PatientRegistrationPage {
         submitButton = new JButton("Submit");
         frame.add(submitButton);
 
+        // Initialize PriorityQueue and link to PriorityQueueGUI
+        priorityQueue = new PriorityQueue<>(6, customComparator);
+        queueGUI = new PriorityQueueGUI();
+
         // Add action listener for the Submit button
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -94,7 +113,7 @@ public class PatientRegistrationPage {
         }
 
         // Check if either emergency or illness is filled
-        if (!hasEmergencySelected && selectedEmergency.equals("Select an emergency") && illness.isEmpty()) {
+        if (!hasEmergencySelected && selectEmergency.equals("Select an emergency") && illness.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please fill in either Emergency or Illness.",
                     "Registration Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -119,6 +138,13 @@ public class PatientRegistrationPage {
                     "Registration successful.\n" + registrationInfo,
                     "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
 
+            // Add the patient to the priority queue
+            if (priorityQueue.size() < 6) {
+                priorityQueue.offer(new Node(name, Integer.parseInt(age), System.nanoTime()));
+            } else {
+                queueGUI.appendToOutput("Queue is full, and this node has lower priority.\n");
+            }
+
             // Clear the input fields for the next registration
             nameField.setText("");
             ageField.setText("");
@@ -127,8 +153,21 @@ public class PatientRegistrationPage {
             illnessField.setText("");
             emergencyDropdown.setSelectedIndex(0);
             hasEmergencySelected = false;
+
+            // Show the PriorityQueueGUI
+            queueGUI.updateQueueDisplay(priorityQueue);
         }
     }
+
+    private Comparator<Node> customComparator = new Comparator<Node>() {
+        public int compare(Node a, Node b) {
+            if (a.priority != b.priority) {
+                return a.priority - b.priority;
+            } else {
+                return Long.compare(a.insertionOrder, b.insertionOrder);
+            }
+        }
+    };
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -137,5 +176,35 @@ public class PatientRegistrationPage {
                 new PatientRegistrationPage();
             }
         });
+    }
+}
+
+class PriorityQueueGUI {
+    private JFrame frame;
+    private JTextArea outputArea;
+
+    public PriorityQueueGUI() {
+        frame = new JFrame("Priority Queue Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        outputArea = new JTextArea(10, 30);
+        outputArea.setEditable(false);
+
+        frame.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().add(new JScrollPane(outputArea), BorderLayout.CENTER);
+    }
+
+    public void updateQueueDisplay(PriorityQueue<Node> priorityQueue) {
+        outputArea.setText("Nodes in the Priority Queue:\n");
+        for (Node node : priorityQueue) {
+            outputArea.append("Node: " + node.data + " Priority: " + node.priority + "\n");
+        }
+
+        frame.setVisible(true);
+    }
+
+    public void appendToOutput(String text) {
+        outputArea.append(text);
     }
 }
