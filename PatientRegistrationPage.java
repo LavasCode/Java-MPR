@@ -8,12 +8,13 @@ class Node {
     String data;
     int priority;
     long insertionOrder;
-
-    public Node(String data, int priority, long insertionOrder) {
+    int agee;
+    public Node(String data, int priority, int agee,long insertionOrder) {
         this.data = data;
         this.priority = priority;
+        this.agee=agee;
         this.insertionOrder = insertionOrder;
-    }
+      }
 }
 
 public class PatientRegistrationPage {
@@ -72,7 +73,6 @@ public class PatientRegistrationPage {
         // Initialize PriorityQueue and link to PriorityQueueGUI
         priorityQueue = new PriorityQueue<>(6, customComparator);
         queueGUI = new PriorityQueueGUI();
-
         // Add action listener for the Submit button
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -84,8 +84,7 @@ public class PatientRegistrationPage {
         frame.pack();
         frame.setVisible(true);
     }
-
-    private void submitRegistration() {
+    public void submitRegistration() {
         // Retrieve patient information
         String name = nameField.getText();
         String age = ageField.getText();
@@ -93,9 +92,15 @@ public class PatientRegistrationPage {
         String contactInfo = contactField.getText();
         String selectedEmergency = (String) emergencyDropdown.getSelectedItem();
         String illness = illnessField.getText();
-
-        // To check whether an emergency is selected or not, hasEmergencySelected stores
-        // boolean true or false
+        int agee;
+        int lowestpriority=0;
+        try {
+            agee = Integer.parseInt(age);
+        } catch (NumberFormatException ex) {
+           
+            JOptionPane.showMessageDialog(frame, "Age must be a valid integer.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
         String selectEmergency = (String) emergencyDropdown.getSelectedItem();
         if (!selectEmergency.equals("Select an emergency")) {
             // Something other than "Select an emergency" has been selected
@@ -118,7 +123,7 @@ public class PatientRegistrationPage {
                     "Registration Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+         int priority=0;
         // Perform validation and processing here
         if (name.isEmpty() || age.isEmpty() || gender.isEmpty() || contactInfo.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please fill in all required fields.",
@@ -130,8 +135,40 @@ public class PatientRegistrationPage {
                     + "\nContact Info: " + contactInfo;
             if (hasEmergencySelected) {
                 registrationInfo += "\nEmergency: " + selectedEmergency;
+                if(selectedEmergency=="Cardiac Arrest")
+                {
+                    priority=1;
+                }
+                else
+                if(selectedEmergency=="Severe Bleeding/Trauma")
+                {
+                    priority=2;
+                }
+                else
+                if(selectedEmergency=="Stroke")
+                {
+                    priority=3;
+                }
+                else
+                if(selectedEmergency=="Heart Attack(Myocardial infarction)")
+                {
+                    priority=4;
+                }
+                else
+                if(selectedEmergency=="Pregnancy Complications")
+                {
+                    priority=5;
+                }
             } else {
                 registrationInfo += "\nIllness Description: " + illness;
+                if(agee>80)
+                {
+                    priority=6;
+                }
+                else
+                {
+                    priority=7;
+                }
             }
 
             JOptionPane.showMessageDialog(frame,
@@ -139,9 +176,19 @@ public class PatientRegistrationPage {
                     "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
 
             // Add the patient to the priority queue
-            if (priorityQueue.size() < 6) {
-                priorityQueue.offer(new Node(name, Integer.parseInt(age), System.nanoTime()));
-            } else {
+            if(priority>lowestpriority)
+            {
+                lowestpriority=priority;
+            }
+            if (priorityQueue.size() <= 6) {
+                priorityQueue.offer(new Node(name,priority,agee,System.nanoTime()));
+            }
+            else if(priority<lowestpriority)
+            {
+                queueGUI.appendToOutput("Emergency Spotted Please wait for 20 seconds\n");
+            }
+            else
+            {
                 queueGUI.appendToOutput("Queue is full, and this node has lower priority.\n");
             }
 
@@ -198,7 +245,7 @@ class PriorityQueueGUI {
     public void updateQueueDisplay(PriorityQueue<Node> priorityQueue) {
         outputArea.setText("Nodes in the Priority Queue:\n");
         for (Node node : priorityQueue) {
-            outputArea.append("Node: " + node.data + " Priority: " + node.priority + "\n");
+            outputArea.append("Node: " + node.data + " Priority: " + node.priority + " Age: "+node.agee+"\n");
         }
 
         frame.setVisible(true);
