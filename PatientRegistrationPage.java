@@ -242,7 +242,7 @@ class PriorityQueueGUI {
     public void updateQueueDisplay(PriorityQueue<Node> priorityQueue) {
         outputArea.setText("Nodes in the Priority Queue:\n");
         for (Node node : priorityQueue) {
-            outputArea.append("Node: " + node.data + " Priority: " + node.priority + " Age: " + node.agee + "\n");
+            outputArea.append("Node: " + node.data + " Patient Id: " + node.priority + " Age: " + node.agee + "\n");
         }
 
         frame.setVisible(true);
