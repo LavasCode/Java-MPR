@@ -196,8 +196,8 @@ public class PatientRegistrationPage {
                 // Create a node with a composite priority value
                 // Higher priority gets higher composite value
                 int compositePriority = priority * 1000 + insertionOrder;
-                priorityQueue.offer(new Node(name, compositePriority, agee, insertionOrder++, 20)); // 20 seconds
-                int extraTime = 20; // Extra time for higher-priority node
+                priorityQueue.offer(new Node(name, compositePriority, agee, insertionOrder++, 30)); // 30 seconds
+                int extraTime = 30; // Extra time for higher-priority node
                 int prevNodeEstTime = 0;
                 for (Node node : priorityQueue) {
                     if (node.priority < compositePriority) {
@@ -209,19 +209,14 @@ public class PatientRegistrationPage {
                     }
                 }
             } else if (priority > lowestpriority) {
-                queueGUI.appendToOutput("Emergency Spotted Please wait for 20 seconds\n");
                 // Adjust timers for nodes below
-                int extraTime = 20; // Extra time for higher-priority node
+                int extraTime = 30; // Extra time for higher-priority node
                 for (Node node : priorityQueue) {
                     if (node.priority < priority) {
                         node.estimatedTime += extraTime;
                     }
                 }
-            } else {
-                queueGUI.appendToOutput("Queue is full, and this node has lower priority.\n");
-            }
-
-            // Clear the input fields for the next registration
+            } 
             nameField.setText("");
             ageField.setText("");
             maleRadioButton.setSelected(true); // Set default gender to Male
@@ -303,10 +298,6 @@ class PriorityQueueGUI {
         for (Node node : priorityQueue) {
             outputArea.append("Node: " + node.data + " Patient Id: " + node.priority + " Age: " + node.agee +
                     " Estimated Time: " + node.estimatedTime + " seconds\n");
-        }
-
-        if (countdown > 0) {
-            outputArea.append("\nCountdown: " + countdown + " seconds");
         }
     }
 
