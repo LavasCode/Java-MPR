@@ -3,58 +3,61 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+
 class Node {
-    String data;
+    String namee;
     int priority;
-    int insertionOrder;
+    int order;
     int agee;
-    int estimatedTime;
-    public Node(String data, int priority, int agee, int insertionOrder, int estimatedTime) {
-        this.data = data;
+    int estTime;
+
+    public Node(String namee, int priority, int agee, int order, int estTime) {
+        this.namee = namee;
         this.priority = priority;
         this.agee = agee;
-        this.insertionOrder = insertionOrder;
-        this.estimatedTime = estimatedTime;
+        this.order = order;
+        this.estTime = estTime;
     }
 }
-public class PatientRegistrationPage {
+
+public class EmergencyQueue {
     private JFrame frame;
     private JTextField nameField, ageField, contactField, illnessField;
-    private JComboBox<String> emergencyDropdown;
-    private JRadioButton maleRadioButton, femaleRadioButton;
-    private ButtonGroup genderButtonGroup;
+    private JComboBox<String> emDropdown;
+    private JRadioButton male, female;
+    private ButtonGroup BtnGrp;
     private JButton submitButton;
-    private boolean hasEmergencySelected = false;
-    private PriorityQueue<Node> priorityQueue;
+    private boolean emSelect = false;
+    private PriorityQueue<Node> PQ;
     private PriorityQueueGUI queueGUI;
-    private int insertionOrder = 0;
+    private int order = 0;
     private javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
-        @Override
         public void actionPerformed(ActionEvent e) {
-            updateEstimatedTime();
+            updateestTime();
         }
     });
     private int countdown = 0;
-    public PatientRegistrationPage() {
-        frame = new JFrame("Patient Registration");
+
+    public EmergencyQueue() {
+        frame = new JFrame("Patient Registration Form");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel formPanel = new JPanel(new GridLayout(9, 2));
         formPanel.add(new JLabel("Name: "));
-        nameField = new JTextField(50);
+        nameField = new JTextField(20);
         formPanel.add(nameField);
         formPanel.add(new JLabel("Age: "));
         ageField = new JTextField(3);
         formPanel.add(ageField);
         formPanel.add(new JLabel("Gender: "));
-        maleRadioButton = new JRadioButton("Male");
-        femaleRadioButton = new JRadioButton("Female");
-        genderButtonGroup = new ButtonGroup();
-        genderButtonGroup.add(maleRadioButton);
-        genderButtonGroup.add(femaleRadioButton);
+        male = new JRadioButton("Male");
+        female = new JRadioButton("Female");
+        BtnGrp = new ButtonGroup();
+        BtnGrp.add(male);
+        BtnGrp.add(female);
         JPanel genderPanel = new JPanel();
-        genderPanel.add(maleRadioButton);
-        genderPanel.add(femaleRadioButton);
+        genderPanel.add(male);
+        genderPanel.add(female);
         formPanel.add(genderPanel);
         formPanel.add(new JLabel("Contact Info: "));
         contactField = new JTextField(20);
@@ -62,23 +65,21 @@ public class PatientRegistrationPage {
         formPanel.add(new JLabel("Describe your illness: "));
         illnessField = new JTextField(20);
         formPanel.add(illnessField);
-        formPanel.add(new JLabel("Emergency Type: ")); 
+        formPanel.add(new JLabel("Emergency Type: "));
         String[] emergencies = { "Select an emergency", "Cardiac Arrest", "Severe Bleeding/Trauma", "Stroke",
                 "Heart Attack(Myocardial infarction)", "Pregnancy Complications" };
-        emergencyDropdown = new JComboBox<>(emergencies);
-        formPanel.add(emergencyDropdown);
+        emDropdown = new JComboBox<>(emergencies);
+        formPanel.add(emDropdown);
         submitButton = new JButton("Submit");
         formPanel.add(submitButton);
         frame.add(formPanel, BorderLayout.NORTH);
-        priorityQueue = new PriorityQueue<>(10, new Comparator<Node>() {
-            @Override
+        PQ = new PriorityQueue<>(10, new Comparator<Node>() {
             public int compare(Node a, Node b) {
                 return Integer.compare(a.priority, b.priority);
             }
         });
         queueGUI = new PriorityQueueGUI();
         submitButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 submitRegistration();
             }
@@ -87,12 +88,13 @@ public class PatientRegistrationPage {
         frame.pack();
         frame.setVisible(true);
     }
+
     public void submitRegistration() {
         String name = nameField.getText();
         String age = ageField.getText();
-        String gender = maleRadioButton.isSelected() ? "Male" : "Female";
+        String gender = male.isSelected() ? "Male" : "Female";
         String contactInfo = contactField.getText();
-        String selectedEmergency = (String) emergencyDropdown.getSelectedItem();
+        String selectedEmergency = (String) emDropdown.getSelectedItem();
         String illness = illnessField.getText();
         int agee;
         try {
@@ -102,18 +104,18 @@ public class PatientRegistrationPage {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        String selectEmergency = (String) emergencyDropdown.getSelectedItem();
-        if (!selectEmergency.equals("Select an emergency")) {
-            hasEmergencySelected = true;
+        String selectEm = (String) emDropdown.getSelectedItem();
+        if (!selectEm.equals("Select an emergency")) {
+            emSelect = true;
         } else {
-            hasEmergencySelected = false;
+            emSelect = false;
         }
-        if (hasEmergencySelected && !illness.isEmpty()) {
+        if (emSelect && !illness.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please select either Emergency or Illness, not both.",
                     "Registration Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (!hasEmergencySelected && selectEmergency.equals("Select an emergency") && illness.isEmpty()) {
+        if (!emSelect && selectEm.equals("Select an emergency") && illness.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please fill in either Emergency or Illness.",
                     "Registration Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -125,7 +127,7 @@ public class PatientRegistrationPage {
         } else {
             String registrationInfo = "Name: " + name + "\nAge: " + age + "\nGender: " + gender
                     + "\nContact Info: " + contactInfo;
-            if (hasEmergencySelected) {
+            if (emSelect) {
                 registrationInfo += "\nEmergency: " + selectedEmergency;
                 if (selectedEmergency.equals("Cardiac Arrest")) {
                     priority = 1;
@@ -148,69 +150,72 @@ public class PatientRegistrationPage {
             }
             JOptionPane.showMessageDialog(frame, "Registration successful.\n" + registrationInfo,
                     "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
-            if (priorityQueue.size() < 10) {
-                int compositePriority = priority * 1000 + insertionOrder;
-                priorityQueue.offer(new Node(name, compositePriority, agee, insertionOrder++, 30));
-                int extraTime = 30; 
+            if (PQ.size() < 10) {
+                int compositePriority = priority * 1000 + order;
+                PQ.offer(new Node(name, compositePriority, agee, order++, 30));
+                int extraTime = 30;
                 int prevNodeEstTime = 0;
-                for (Node node : priorityQueue) {
+                for (Node node : PQ) {
                     if (node.priority < compositePriority) {
-                        prevNodeEstTime = node.estimatedTime;
+                        prevNodeEstTime = node.estTime;
                     } else if (node.priority == compositePriority) {
-                        node.estimatedTime = prevNodeEstTime + extraTime;
-                    } else {
-                        node.estimatedTime += extraTime;
+                        node.estTime = prevNodeEstTime + extraTime;
+                    } else if (node.priority > compositePriority) {
+                        node.estTime += extraTime;
                     }
                 }
             }
             nameField.setText("");
             ageField.setText("");
-            maleRadioButton.setSelected(true);
+            male.setSelected(true);
             contactField.setText("");
             illnessField.setText("");
-            emergencyDropdown.setSelectedIndex(0);
-            hasEmergencySelected = false;
-            List<Node> sortedNodes = new ArrayList<>(priorityQueue);
+            emDropdown.setSelectedIndex(0);
+            emSelect = false;
+            List<Node> sortedNodes = new ArrayList<>(PQ);
             sortedNodes.sort(new Comparator<Node>() {
-                @Override
+
                 public int compare(Node a, Node b) {
                     return Integer.compare(a.priority, b.priority);
                 }
             });
-            priorityQueue.clear();
-            priorityQueue.addAll(sortedNodes);
-            queueGUI.updateQueueDisplay(priorityQueue, countdown);
+            PQ.clear();
+            PQ.addAll(sortedNodes);
+            queueGUI.updateQueueDisplay(PQ, countdown);
         }
 
     }
-    private void updateEstimatedTime() {
+
+    private void updateestTime() {
         List<Node> removedNodes = new ArrayList<>();
-        for (Node node : priorityQueue) {
-            if (node.estimatedTime > 1) {
-                node.estimatedTime--;
+        for (Node node : PQ) {
+            if (node.estTime > 1) {
+                node.estTime--;
             } else {
                 removedNodes.add(node);
             }
         }
-        priorityQueue.removeAll(removedNodes);
-        if (!priorityQueue.isEmpty() && countdown == 0) {
-            countdown = priorityQueue.peek().estimatedTime;
+        PQ.removeAll(removedNodes);
+        if (!PQ.isEmpty() && countdown == 0) {
+            countdown = PQ.peek().estTime;
         } else if (countdown > 0) {
             countdown--;
         }
-        queueGUI.updateQueueDisplay(priorityQueue, countdown);
+        queueGUI.updateQueueDisplay(PQ, countdown);
     }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
-            @Override
             public void run() {
-                new PatientRegistrationPage();
+                new EmergencyQueue();
             }
         });
     }
 }
+
 class PriorityQueueGUI {
     private JTextArea outputArea;
+
     public PriorityQueueGUI() {
         JFrame frame = new JFrame("Priority Queue Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -221,13 +226,15 @@ class PriorityQueueGUI {
         frame.getContentPane().add(new JScrollPane(outputArea), BorderLayout.CENTER);
         frame.setVisible(true);
     }
+
     public void updateQueueDisplay(PriorityQueue<Node> priorityQueue, int countdown) {
-        outputArea.setText("Nodes in the Priority Queue:\n");
+        outputArea.setText("Patients in the Queue:\n");
         for (Node node : priorityQueue) {
-            outputArea.append("Node: " + node.data + " Patient Id: " + node.priority + " Age: " + node.agee +
-                    " Estimated Time: " + node.estimatedTime + " seconds\n");
+            outputArea.append("Name: " + node.namee + " Patient Id: " + node.priority + " Age: " + node.agee +
+                    " Estimated Time: " + node.estTime + " seconds\n");
         }
     }
+
     public void appendToOutput(String text) {
         outputArea.append(text);
     }
