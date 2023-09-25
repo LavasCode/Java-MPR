@@ -29,15 +29,13 @@ public class EmergencyQueue {
     private JButton submitButton;
     private boolean emSelect = false;
     private PriorityQueue<Node> PQ;
-    private PriorityQueueGUI queueGUI;
+    private PatientQueueGUI queueGUI;
     private int order = 0;
     private javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             updateestTime();
         }
     });
-    private int countdown = 0;
-
     public EmergencyQueue() {
         frame = new JFrame("Patient Registration Form");
         frame.setLayout(new BorderLayout());
@@ -60,10 +58,10 @@ public class EmergencyQueue {
         genderPanel.add(female);
         formPanel.add(genderPanel);
         formPanel.add(new JLabel("Contact Info: "));
-        contactField = new JTextField(20);
+        contactField = new JTextField(40);
         formPanel.add(contactField);
         formPanel.add(new JLabel("Describe your illness: "));
-        illnessField = new JTextField(20);
+        illnessField = new JTextField(40);
         formPanel.add(illnessField);
         formPanel.add(new JLabel("Emergency Type: "));
         String[] emergencies = { "Select an emergency", "Cardiac Arrest", "Severe Bleeding/Trauma", "Stroke",
@@ -78,7 +76,7 @@ public class EmergencyQueue {
                 return Integer.compare(a.priority, b.priority);
             }
         });
-        queueGUI = new PriorityQueueGUI();
+        queueGUI = new PatientQueueGUI();
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 submitRegistration();
@@ -181,7 +179,7 @@ public class EmergencyQueue {
             });
             PQ.clear();
             PQ.addAll(sortedNodes);
-            queueGUI.updateQueueDisplay(PQ, countdown);
+            queueGUI.updateQueueDisplay(PQ);
         }
 
     }
@@ -196,12 +194,7 @@ public class EmergencyQueue {
             }
         }
         PQ.removeAll(removedNodes);
-        if (!PQ.isEmpty() && countdown == 0) {
-            countdown = PQ.peek().estTime;
-        } else if (countdown > 0) {
-            countdown--;
-        }
-        queueGUI.updateQueueDisplay(PQ, countdown);
+        queueGUI.updateQueueDisplay(PQ);
     }
 
     public static void main(String[] args) {
@@ -213,11 +206,11 @@ public class EmergencyQueue {
     }
 }
 
-class PriorityQueueGUI {
+class PatientQueueGUI {
     private JTextArea outputArea;
 
-    public PriorityQueueGUI() {
-        JFrame frame = new JFrame("Priority Queue Example");
+    public PatientQueueGUI() {
+        JFrame frame = new JFrame("Patient Queue");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
         outputArea = new JTextArea(10, 30);
@@ -227,7 +220,7 @@ class PriorityQueueGUI {
         frame.setVisible(true);
     }
 
-    public void updateQueueDisplay(PriorityQueue<Node> priorityQueue, int countdown) {
+    public void updateQueueDisplay(PriorityQueue<Node> priorityQueue) {
         outputArea.setText("Patients in the Queue:\n");
         for (Node node : priorityQueue) {
             outputArea.append("Name: " + node.namee + " Patient Id: " + node.priority + " Age: " + node.agee +
@@ -235,7 +228,7 @@ class PriorityQueueGUI {
         }
     }
 
-    public void appendToOutput(String text) {
+    public void updateOutput(String text) {
         outputArea.append(text);
     }
 }
