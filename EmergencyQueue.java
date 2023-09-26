@@ -149,16 +149,16 @@ public class EmergencyQueue {
             JOptionPane.showMessageDialog(frame, "Registration successful.\n" + registrationInfo,
                     "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
             if (PQ.size() < 10) {
-                int compositePriority = priority * 1000 + order;
-                PQ.offer(new Node(name, compositePriority, agee, order++, 30));
+                int finalPriority = priority * 1000 + order;
+                PQ.offer(new Node(name, finalPriority, agee, order++, 30));
                 int extraTime = 30;
                 int prevNodeEstTime = 0;
                 for (Node node : PQ) {
-                    if (node.priority < compositePriority) {
+                    if (node.priority < finalPriority) {
                         prevNodeEstTime = node.estTime;
-                    } else if (node.priority == compositePriority) {
+                    } else if (node.priority == finalPriority) {
                         node.estTime = prevNodeEstTime + extraTime;
-                    } else if (node.priority > compositePriority) {
+                    } else if (node.priority > finalPriority) {
                         node.estTime += extraTime;
                     }
                 }
