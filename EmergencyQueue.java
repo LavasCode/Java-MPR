@@ -40,7 +40,12 @@ public class EmergencyQueue {
         frame = new JFrame("Patient Registration Form");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel formPanel = new JPanel(new GridLayout(9, 2));
+        JPanel titleLabel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel titleText = new JLabel("Please fill out this form and you will be assigned a number in the queue");
+        titleText.setPreferredSize(new Dimension(400, 50));
+        titleLabel.add(titleText);
+        frame.add(titleLabel, BorderLayout.NORTH);
+        JPanel formPanel = new JPanel(new GridLayout(7, 2));
         formPanel.add(new JLabel("Name: "));
         nameField = new JTextField(20);
         formPanel.add(nameField);
@@ -57,20 +62,25 @@ public class EmergencyQueue {
         genderPanel.add(male);
         genderPanel.add(female);
         formPanel.add(genderPanel);
-        formPanel.add(new JLabel("Contact Info: "));
+        formPanel.add(new JLabel("Contact Info: +91"));
         contactField = new JTextField(40);
         formPanel.add(contactField);
         formPanel.add(new JLabel("Describe your illness: "));
         illnessField = new JTextField(40);
         formPanel.add(illnessField);
-        formPanel.add(new JLabel("Emergency Type: "));
+        formPanel.add(new JLabel("OR"));
+        formPanel.add(new JLabel(""));
         String[] emergencies = { "Select an emergency", "Cardiac Arrest", "Severe Bleeding/Trauma", "Stroke",
                 "Heart Attack(Myocardial infarction)", "Pregnancy Complications" };
         emDropdown = new JComboBox<>(emergencies);
         formPanel.add(emDropdown);
+        formPanel.add(new JLabel(""));
+        JPanel submitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         submitButton = new JButton("Submit");
-        formPanel.add(submitButton);
-        frame.add(formPanel, BorderLayout.NORTH);
+        submitButton.setPreferredSize(new Dimension(300,50));
+        submitPanel.add(submitButton);
+        frame.add(submitPanel,BorderLayout.SOUTH);
+        frame.add(formPanel, BorderLayout.CENTER);
         PQ = new PriorityQueue<>(10, new Comparator<Node>() {
             public int compare(Node a, Node b) {
                 return Integer.compare(a.priority, b.priority);
@@ -95,10 +105,37 @@ public class EmergencyQueue {
         String selectedEmergency = (String) emDropdown.getSelectedItem();
         String illness = illnessField.getText();
         int agee;
+        long number;
+        if (name.isEmpty() || age.isEmpty() || gender.isEmpty() || contactInfo.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Please fill in all required fields.", "Registration Error",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+        }
         try {
             agee = Integer.parseInt(age);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(frame, "Age must be a valid integer.", "Registration Error",
+            JOptionPane.showMessageDialog(frame, "Age must be a valid number.", "Registration Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if(agee>120)
+        {
+            JOptionPane.showMessageDialog(frame, "Enter a valid age.", "Registration Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+        contactInfo=contactInfo.trim();
+        try {
+            number = Long.parseLong(contactInfo);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Please enter only Numbers in the Contact Information field.", "Registration Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        number=contactInfo.length();
+        if(number!=10)
+        {
+           JOptionPane.showMessageDialog(frame, "Please recheck your Contact Information.", "Registration Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -119,10 +156,7 @@ public class EmergencyQueue {
             return;
         }
         int priority = 0;
-        if (name.isEmpty() || age.isEmpty() || gender.isEmpty() || contactInfo.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Please fill in all required fields.", "Registration Error",
-                    JOptionPane.ERROR_MESSAGE);
-        } else {
+        {
             String registrationInfo = "Name: " + name + "\nAge: " + age + "\nGender: " + gender
                     + "\nContact Info: " + contactInfo;
             if (emSelect) {
@@ -205,7 +239,6 @@ public class EmergencyQueue {
         });
     }
 }
-
 class PatientQueueGUI {
     private JTextArea outputArea;
 
