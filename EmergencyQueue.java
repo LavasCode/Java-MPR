@@ -119,7 +119,7 @@ public class EmergencyQueue {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (agee > 120) {
+        if ((agee > 120)||(agee<0)) {
             JOptionPane.showMessageDialog(frame, "Enter a valid age.", "Registration Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
