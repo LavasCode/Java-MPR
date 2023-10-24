@@ -36,13 +36,14 @@ public class EmergencyQueue {
             updateestTime();
         }
     });
+
     public EmergencyQueue() {
         frame = new JFrame("Patient Registration Form");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel titleLabel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel titleText = new JLabel("Please fill out this form and you will be assigned a number in the queue");
-        titleText.setPreferredSize(new Dimension(400, 50));
+        JLabel titleText = new JLabel("Please fill out this form and you will be assigned a number in the queue:");
+        titleText.setPreferredSize(new Dimension(450, 50));
         titleLabel.add(titleText);
         frame.add(titleLabel, BorderLayout.NORTH);
         JPanel formPanel = new JPanel(new GridLayout(7, 2));
@@ -68,18 +69,18 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Describe your illness: "));
         illnessField = new JTextField(40);
         formPanel.add(illnessField);
+        formPanel.add(new JLabel(""));
         formPanel.add(new JLabel("OR"));
         formPanel.add(new JLabel(""));
         String[] emergencies = { "Select an emergency", "Cardiac Arrest", "Severe Bleeding/Trauma", "Stroke",
                 "Heart Attack(Myocardial infarction)", "Pregnancy Complications" };
         emDropdown = new JComboBox<>(emergencies);
         formPanel.add(emDropdown);
-        formPanel.add(new JLabel(""));
         JPanel submitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         submitButton = new JButton("Submit");
-        submitButton.setPreferredSize(new Dimension(300,50));
+        submitButton.setPreferredSize(new Dimension(300, 50));
         submitPanel.add(submitButton);
-        frame.add(submitPanel,BorderLayout.SOUTH);
+        frame.add(submitPanel, BorderLayout.SOUTH);
         frame.add(formPanel, BorderLayout.CENTER);
         PQ = new PriorityQueue<>(10, new Comparator<Node>() {
             public int compare(Node a, Node b) {
@@ -109,7 +110,7 @@ public class EmergencyQueue {
         if (name.isEmpty() || age.isEmpty() || gender.isEmpty() || contactInfo.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please fill in all required fields.", "Registration Error",
                     JOptionPane.ERROR_MESSAGE);
-                    return;
+            return;
         }
         try {
             agee = Integer.parseInt(age);
@@ -118,24 +119,23 @@ public class EmergencyQueue {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if(agee>120)
-        {
+        if (agee > 120) {
             JOptionPane.showMessageDialog(frame, "Enter a valid age.", "Registration Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return; 
-        }
-        contactInfo=contactInfo.trim();
-        try {
-            number = Long.parseLong(contactInfo);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(frame, "Please enter only Numbers in the Contact Information field.", "Registration Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        number=contactInfo.length();
-        if(number!=10)
-        {
-           JOptionPane.showMessageDialog(frame, "Please recheck your Contact Information.", "Registration Error",
+        contactInfo = contactInfo.trim();
+        try {
+            number = Long.parseLong(contactInfo);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Please enter only Numbers in the Contact Information field.",
+                    "Registration Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        number = contactInfo.length();
+        if (number != 10) {
+            JOptionPane.showMessageDialog(frame, "Please recheck your Contact Information.", "Registration Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -239,6 +239,7 @@ public class EmergencyQueue {
         });
     }
 }
+
 class PatientQueueGUI {
     private JTextArea outputArea;
 
