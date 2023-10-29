@@ -162,7 +162,7 @@ public class EmergencyQueue {
             return;
         }
         number = contactInfo.length();
-        if (number > 10) {
+        if (number != 10) {
             JOptionPane.showMessageDialog(frame, "Please recheck your Contact Information.", "Registration Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
