@@ -36,25 +36,25 @@ public class EmergencyQueue {
     private int order2 = 0;
     private javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            List<Node> removedNodes = new ArrayList<>();
+            List<Node> remNodes = new ArrayList<>();
             for (Node node : queue1) {
                 if (node.estTime > 1) {
                     node.estTime--;
                 } else {
-                    removedNodes.add(node);
+                    remNodes.add(node);
                 }
             }
             for (Node node : queue2) {
                 if (node.estTime > 1) {
                     node.estTime--;
                 } else {
-                    removedNodes.add(node);
+                    remNodes.add(node);
                 }
             }
-            queue1.removeAll(removedNodes);
-            queue2.removeAll(removedNodes);
-            queueGUI1.updateQueueDisplay(queue1);
-            queueGUI2.updateQueueDisplay(queue2);
+            queue1.removeAll(remNodes);
+            queue2.removeAll(remNodes);
+            queueGUI1.updateQDisp(queue1);
+            queueGUI2.updateQDisp(queue2);
 
         }
     });
@@ -185,10 +185,10 @@ public class EmergencyQueue {
         }
         int priority = 0;
         {
-            String registrationInfo = "Name: " + name + "\nAge: " + age + "\nGender: " + gender
+            String regInfo = "Name: " + name + "\nAge: " + age + "\nGender: " + gender
                     + "\nContact Info: " + contactInfo;
             if (emSelect) {
-                registrationInfo += "\nEmergency: " + selectedEmergency;
+                regInfo += "\nEmergency: " + selectedEmergency;
                 if (selectedEmergency.equals("Cardiac Arrest")) {
                     priority = 1;
                 } else if (selectedEmergency.equals("Severe Bleeding/Trauma")) {
@@ -201,20 +201,19 @@ public class EmergencyQueue {
                     priority = 5;
                 }
             } else {
-                registrationInfo += "\nIllness Description: " + illness;
+                regInfo += "\nIllness Description: " + illness;
                 if (agee > 80) {
                     priority = 6;
                 } else {
                     priority = 7;
                 }
             }
-            JOptionPane.showMessageDialog(frame, "Registration successful.\n" + registrationInfo,
+            JOptionPane.showMessageDialog(frame, "Registration successful.\n" + regInfo,
                     "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
 
-            // Determine which queue to enqueue the patient based on estimated wait time
-            int waitTime1 = queue1.isEmpty() ? 0 : queue1.peek().estTime;
-            int waitTime2 = queue2.isEmpty() ? 0 : queue2.peek().estTime;
-            if (waitTime1 <= waitTime2) {
+            int waitTimeq1 = queue1.isEmpty() ? 0 : queue1.peek().estTime;
+            int waitTimeq2 = queue2.isEmpty() ? 0 : queue2.peek().estTime;
+            if (waitTimeq1 <= waitTimeq2) {
                 int finalPriority = priority * 1000 + order1;
                 queue1.offer(new Node(name, finalPriority, agee, order1++, 40));
                 int extraTime = 40;
@@ -228,17 +227,17 @@ public class EmergencyQueue {
                         node.estTime += extraTime;
                     }
                 }
-                List<Node> removedNodes = new ArrayList<>();
+                List<Node> remNodes = new ArrayList<>();
                 for (Node node : queue1) {
                     if (node.estTime > 1) {
                         node.estTime--;
                     } else {
-                        removedNodes.add(node);
+                        remNodes.add(node);
                     }
                 }
-                queue1.removeAll(removedNodes);
-                queueGUI1.updateQueueDisplay(queue1);
-                queueGUI2.updateQueueDisplay(queue2);
+                queue1.removeAll(remNodes);
+                queueGUI1.updateQDisp(queue1);
+                queueGUI2.updateQDisp(queue2);
             } else {
                 int finalPriority = priority * 1000 + order2;
                 queue2.offer(new Node(name, finalPriority, agee, order2++, 40));
@@ -253,17 +252,17 @@ public class EmergencyQueue {
                         node.estTime += extraTime;
                     }
                 }
-                List<Node> removedNodes = new ArrayList<>();
+                List<Node> remNodes = new ArrayList<>();
                 for (Node node : queue2) {
                     if (node.estTime > 1) {
                         node.estTime--;
                     } else {
-                        removedNodes.add(node);
+                        remNodes.add(node);
                     }
                 }
-                queue2.removeAll(removedNodes);
-                queueGUI1.updateQueueDisplay(queue1);
-                queueGUI2.updateQueueDisplay(queue2);
+                queue2.removeAll(remNodes);
+                queueGUI1.updateQDisp(queue1);
+                queueGUI2.updateQDisp(queue2);
             }
 
             nameField.setText("");
@@ -289,8 +288,8 @@ public class EmergencyQueue {
             queue2.clear();
             queue1.addAll(sortedNodes1);
             queue2.addAll(sortedNodes2);
-            queueGUI1.updateQueueDisplay(queue1);
-            queueGUI2.updateQueueDisplay(queue2);
+            queueGUI1.updateQDisp(queue1);
+            queueGUI2.updateQDisp(queue2);
         }
     }
 
@@ -319,7 +318,7 @@ class PatientQueueGUI {
         frame.setVisible(true);
     }
 
-    public void updateQueueDisplay(PriorityQueue<Node> priorityQueue) {
+    public void updateQDisp(PriorityQueue<Node> priorityQueue) {
         outputArea.setText(queueName + " - Patients in the Queue:\n");
         for (Node node : priorityQueue) {
             outputArea.append("Name: " + node.namee + " Patient Id: " + node.priority + " Age: " + node.agee +
