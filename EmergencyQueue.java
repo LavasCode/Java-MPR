@@ -72,15 +72,18 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Name: "));
         nameField = new JTextField(20);
         formPanel.add(nameField);
+        nameField.setText("John Doe");
         formPanel.add(new JLabel("Age: "));
         ageField = new JTextField(3);
         formPanel.add(ageField);
+        ageField.setText("50");
         formPanel.add(new JLabel("Gender: "));
         male = new JRadioButton("Male");
         female = new JRadioButton("Female");
         BtnGrp = new ButtonGroup();
         BtnGrp.add(male);
         BtnGrp.add(female);
+        male.setSelected(true);
         JPanel genderPanel = new JPanel();
         genderPanel.add(male);
         genderPanel.add(female);
@@ -88,6 +91,7 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Contact Info: +91"));
         contactField = new JTextField(40);
         formPanel.add(contactField);
+        contactField.setText("9869234560");
         formPanel.add(new JLabel("Describe your illness: "));
         illnessField = new JTextField(40);
         formPanel.add(illnessField);
