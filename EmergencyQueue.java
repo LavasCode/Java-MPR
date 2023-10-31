@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
-
 class Node {
     String namee;
     int priority;
@@ -72,11 +71,11 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Name: "));
         nameField = new JTextField(20);
         formPanel.add(nameField);
-        nameField.setText("John Doe");
+        nameField.setText("");
         formPanel.add(new JLabel("Age: "));
         ageField = new JTextField(3);
         formPanel.add(ageField);
-        ageField.setText("50");
+        ageField.setText("");
         formPanel.add(new JLabel("Gender: "));
         male = new JRadioButton("Male");
         female = new JRadioButton("Female");
@@ -91,7 +90,7 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Contact Info: +91"));
         contactField = new JTextField(40);
         formPanel.add(contactField);
-        contactField.setText("9869234560");
+        contactField.setText("");
         formPanel.add(new JLabel("Describe your illness: "));
         illnessField = new JTextField(40);
         formPanel.add(illnessField);
@@ -214,9 +213,20 @@ public class EmergencyQueue {
             }
             JOptionPane.showMessageDialog(frame, "Registration successful.\n" + regInfo,
                     "Registration Successful", JOptionPane.INFORMATION_MESSAGE);
-
-            int waitTimeq1 = queue1.isEmpty() ? 0 : queue1.peek().estTime;
-            int waitTimeq2 = queue2.isEmpty() ? 0 : queue2.peek().estTime;
+            Node lastNodeQ1 = null;
+            Node lastNodeQ2 = null;
+            if (!queue1.isEmpty()) {
+            for (Node node : queue1) {
+            lastNodeQ1 = node;
+            }
+            }
+            if (!queue2.isEmpty()) {
+            for (Node node : queue2) {
+            lastNodeQ2 = node;
+            }
+            }
+            int waitTimeq1 = (lastNodeQ1 != null) ? lastNodeQ1.estTime : 0;
+            int waitTimeq2 = (lastNodeQ2 != null) ? lastNodeQ2.estTime : 0;
             if (waitTimeq1 <= waitTimeq2) {
                 int finalPriority = priority * 1000 + order1;
                 queue1.offer(new Node(name, finalPriority, agee, order1++, 40));
