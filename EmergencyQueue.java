@@ -71,11 +71,11 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Name: "));
         nameField = new JTextField(20);
         formPanel.add(nameField);
-        nameField.setText("");
+        nameField.setText("John Doe");
         formPanel.add(new JLabel("Age: "));
         ageField = new JTextField(3);
         formPanel.add(ageField);
-        ageField.setText("");
+        ageField.setText("50");
         formPanel.add(new JLabel("Gender: "));
         male = new JRadioButton("Male");
         female = new JRadioButton("Female");
@@ -90,7 +90,7 @@ public class EmergencyQueue {
         formPanel.add(new JLabel("Contact Info: +91"));
         contactField = new JTextField(40);
         formPanel.add(contactField);
-        contactField.setText("");
+        contactField.setText("9898989898");
         formPanel.add(new JLabel("Describe your illness: "));
         illnessField = new JTextField(40);
         formPanel.add(illnessField);
