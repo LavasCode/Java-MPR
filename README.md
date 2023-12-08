@@ -1,2 +1,2 @@
-# Java-MPR
-A queue simulation Java mini project in SEM 3.
+# Java-MPR (Sem 3)
+
